@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=320,maximum-scale=1.3,user-scalable=no">
+    <title></title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        .demo{
+            width:320px;
+            height:160px;
+            margin:100px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class = main>
+        <div class="demo">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+<script>
+    //去掉默认选中
+    var bodyStyle = document.body.style;
+    bodyStyle.mozUserSelect = "none";
+    bodyStyle.webkitUserSelect = "none";
+
+    var img = new Image();
+    var num = Math.floor(Math.random()*10);
+    if(num>0){
+        img.src = "p_0.jpg";
+    }else{
+        img.src = "p_1.jpg";
+    }
+
+
+    var canvas = document.getElementById("canvas");
+//    canvas.style.position = "absolute";
+    var ctx = canvas.getContext("2d");
+   img.onload = function(){
+       var flag = false;
+       var w = img.width;
+       var h = img.height;
+       canvas.width =w;
+       canvas.height = h;
+       canvas.style.backgroundImage = "url("+img.src+")";
+       ctx.fillStyle = "gray";      //矩形覆盖区
+       ctx.fillRect(0,0,w,h);
+
+       ctx.globalCompositeOperation = "destination-out";        //重点重点！！！划过区域透明
+            /*globalCompositeOperation
+            * 属性设置或返回如何将一个源（新的）图像绘制到目标（已有）的图像上。
+            *destination-out：在源图像外显示目标图像。只有源图像外的目标图像部分会被显示，源图像是透明的。
+            * */
+       canvas.addEventListener("mousedown",eventDown,false);
+       canvas.addEventListener("mouseup",eventUp,false);
+       canvas.addEventListener("mousemove",eventMove,false);
+
+//移动端事件
+       canvas.addEventListener("touchstart",eventDown,false);
+       canvas.addEventListener("touchend",eventUp,false);
+       canvas.addEventListener("touchmove",eventMove,false);
+       function eventDown(e){
+           e.preventDefault();
+           flag = true;
+       }
+       function eventUp(e){
+           e.preventDefault();
+           flag = false;
+       }
+       function eventMove(e){
+           e.preventDefault();
+
+           if(flag){
+
+               if(e.changedTouches){
+                   e = e.changedTouches[e.changedTouches.length -1];
+               }        //手机端设置：按照最后一个落下的手指为主
+               var x = e.pageX - canvas.offsetLeft;
+               var y = e.pageY - canvas.offsetTop;
+
+               ctx.beginPath();
+               ctx.arc(x,y,20,0,Math.PI*2,true);
+               ctx.fill();
+               /*
+              ctx.clearRect(x,y,20,20);
+                逻辑：鼠标划过区域清除原灰色矩形，出现canvas的背景图
+               */
+           }
+       }
+
+
+   }
+
+
+</script>
+</body>
+</html>
