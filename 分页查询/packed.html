@@ -1,0 +1,17 @@
+
+
+    <nav class="text-center">
+        <ul class="pagination">
+            <li ng-click="getData(pagenow-1)" ng-class="{'true':'disabled '}[pagenow ==0]">
+                <a > &laquo; </a>
+            </li>
+            <li ng-repeat="i in count"
+                ng-class="{'true':'active'}[pagenow==$index]">
+                <a ng-click="getData(i)">{{i+1}}</a>
+            </li>
+            <li ng-click="getData(pagenow+1)" ng-class="{'true':'disabled'}[pagenow ==count.length-1]">
+                <a > &raquo; </a>
+            </li>
+        </ul>
+    </nav>
+
