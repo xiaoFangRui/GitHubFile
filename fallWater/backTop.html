@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="jquery-2.2.3.js"></script>
+    <style>
+        a{
+            width:50px;
+            text-align: center;
+            height:50px;
+            line-height: 50px;;
+            background-color: #999999;
+            color:#fff;
+            font-weight: bold;
+            font-size: 30px;
+            text-decoration:none;
+            position:fixed;
+            bottom:50px;
+            right:50px;
+            display:none;
+        }
+        a:hover{
+            background-color: aquamarine;
+        }
+    </style>
+</head>
+<body>
+
+<a href="javascript:;">^</a>
+<script>
+        $(function(){
+            var winHeight = $(window).height();
+            $(window).scroll(function(){
+                    var scrHeight = $(window).scrollTop();
+                    if(scrHeight > winHeight){
+                            $("a").fadeIn(300,function(){
+                                $(this).clearQueue();
+                            });
+                    }else{
+                            $("a").fadeOut(300,function(){
+                                $(this).clearQueue();
+                            });
+                    }
+            });
+
+            $("a").on("click",function(){
+                    $("body,html").animate({
+                        scrollTop:0
+                    },500);
+            })
+        })
+</script>
+<script>
+    for(var i=0; i<100; i++){
+            document.write("<h1>"+i+"</h1>");
+    }
+</script>
+</body>
+</html>
