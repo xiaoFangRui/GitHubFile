@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        canvas{
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <button>开始</button>
+    <button>结束</button>
+    <canvas width="500" height="500" id="canvas"></canvas>
+
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var start = document.getElementsByTagName("button").item(0);
+        var stop = document.getElementsByTagName("button").item(1);
+        var ctxWidth = canvas.width;
+        var ctxHeight = canvas.height;
+        var ballArr = [];
+        var time = null;
+        var flag = false;
+
+
+
+        var Ball = function(x,y,sx,sy,r){
+            this.x = x;
+            this.y = y;
+            this.sx = sx;
+            this.sy = sy;
+            this.r = r;
+        };
+        Ball.prototype.move = function(){
+
+            this.x += this.sx;
+            this.y += this.sy;
+            if(this.x < this.r){
+                this.x = this.r;
+                this.sx = Math.abs(this.sx);
+            }else if(this.x > ctxWidth - this.r){
+                this.x = ctxWidth - this.r;
+                this.sx = -this.sx;
+            }
+            if(this.y < this.r){
+                this.y = this.r;
+                this.sy = Math.abs(this.sy);
+            }else if(this.y > ctxHeight - this.r){
+                this.y = ctxHeight - this.r;
+                this.sy = -this.sy;
+            }
+
+            ctx.beginPath();
+            ctx.fillStyle = "#fff";
+            ctx.arc(this.x,this.y,this.r,0,2*Math.PI,false);
+            ctx.fill();
+        };
+
+        function startGame(){
+            var x, y,sx,sy,r;
+            for(var i=0;i<10;i++){
+                x = Math.random()*ctxWidth;
+                y = Math.random()*ctxHeight;
+                sx = Math.random()*10-5;
+                sy = Math.random()*10-5;
+                r = Math.random()*10+2;
+                var ball = new Ball(x,y,sx,sy,r);
+                ballArr.push(ball);
+
+            }
+
+        }
+        function moveBall(){
+            ctx.clearRect(0,0,ctxWidth,ctxHeight);
+            for(var i=0;i<ballArr.length;i++){
+                ballArr[i].move();
+            }
+            if(flag){
+                clearTimeout(time);
+                time = setTimeout(moveBall,30);
+            }
+
+
+        }
+        startGame();
+        start.onclick = function(){
+            flag = true;
+            moveBall();
+        };
+        stop.onclick = function(){
+            clearTimeout(time);
+            flag = false;
+        };
+    }
+
+</script>
+</body>
+</html>
