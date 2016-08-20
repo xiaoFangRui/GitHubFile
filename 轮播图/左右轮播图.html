@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{
+            margin:0; padding:0;
+            text-decoration: none;
+        }
+        img{
+            float:left;
+            width:800px;
+        }
+        .container{
+            margin:5px;
+            width:800px;
+            height:535px;
+            border:1px solid aqua;
+            position:relative;
+            /*overflow:hidden;*/
+        }
+        .list{
+            width:5600px;
+            height:535px;
+            position:absolute;
+        }
+        .btn{
+            position:absolute;
+            bottom:20px;
+            left:350px;
+        }
+        .btn span{
+            float:left;
+            width:15px;
+            height:15px;
+            border-radius:50%;
+            background-color: grey;
+            margin:0 3px;
+        }
+        .btn .on{
+            background-color: red;
+        }
+        .leftright a{
+            position:absolute;
+            font-size: 40px;
+            font-weight: bold;
+            background-color: rgba(0,0,0,0.5);
+            top:250px;
+            display:none;
+        }
+        .left{
+            left:5px;
+        }
+        .right{
+            right:5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container" >
+        <div class="list" id="list" style="left:-800px">
+            <img src="img/P5.jpg" title="第五张图片"/>
+            <img src="img/P1.jpg" title="第一张图片"/>
+            <img src="img/P2.jpg" title="第二张图片"/>
+            <img src="img/P3.jpg" title="第三张图片"/>
+            <img src="img/P4.jpg" title="第四张图片"/>
+            <img src="img/P5.jpg" title="第五张图片"/>
+            <img src="img/P1.jpg" title="第一张图片"/>
+        </div>
+        <div class="btn" id="btn">
+            <span class="on" data-index="1"></span>
+            <span data-index="2"></span>
+            <span data-index="3"></span>
+            <span data-index="4"></span>
+            <span data-index="5"></span>
+        </div>
+        <div class="leftright" id="leftright">
+            <a href="javascript:;" class="left" id="left">&lt;</a>
+            <a href="javascript:;" class="right" id="right">&gt;</a>
+        </div>
+    </div>
+
+<script>
+    window.onload = function(){
+        var container = getId("container");
+        var right = getId("right");
+        var left = getId("left");
+        var btn = getId("btn").getElementsByTagName("span");
+        var list = getId("list");
+        var len = 5;
+        var index =1;
+        var timer = null;
+        var animationflag = false;
+        function animation(offset){
+            if(offset ===0){
+                return;
+            }
+            var time = 400;
+            var interval = 10;
+            var speed = offset / (time /interval);
+            var left = parseInt(list.style.left) + offset;
+            animationflag = true ;
+            /*右移
+            * 0··1      2       3           4       5       0
+            * 0··-800   -1600   -2400     -3200   -4000   -4800
+            * */
+            var go = function(){
+                if((speed >0 && parseInt(list.style.left) < left) || (speed < 0 && parseInt(list.style.left) > left )){
+                    list.style.left = parseInt(list.style.left) +speed +"px";
+                   // console.log(speed);
+                    setTimeout(go , interval);
+                }else{
+                    list.style.left = left +"px";
+                    if(left >-800){
+                        list.style.left = -800 *len +"px";
+                    }
+                    if(left <-800*len){
+                        list.style.left = -800 +"px";
+                    }
+                    animationflag = false;
+                }
+
+            };
+            go();
+        }
+        //span点击事件
+        function changebtn(){
+            for(var j=0;j<btn.length;j++){
+                if(btn[j].className =="on"){
+                    btn[j].className = "";
+                    break;
+                }
+            }
+            btn[index-1].className = "on";
+        }
+        for(var i=0;i<btn.length;i++){
+            btn[i].onclick = function(){
+                var myindex = parseInt(this.getAttribute("data-index"));
+                console.log(myindex);
+                console.log(index);
+                var offset = -800 * (myindex - index);
+                console.log(offset);
+                animation(offset);
+                index = myindex;
+                changebtn();
+            }
+        }
+        //左右按钮点击事件
+        right.onclick = function(){
+            if(animationflag){
+                return;
+            }
+            if(index ==5){
+                index = 1;
+            }else{
+                index ++;
+            }
+            changebtn();
+            animation(-800);
+        };
+        left.onclick = function(){
+            if(animationflag){
+                return;
+            }
+            if(index ==1){
+                index = 5;
+            }else{
+                index --;
+            }
+            changebtn();
+            animation(800);
+        };
+
+        function autoPlay(){
+            timer = setInterval(right.onclick,2000);
+        }
+        autoPlay();
+
+        container.onmouseover =  function(){
+            clearInterval(timer);
+            left.style.display = "block";
+            right.style.display = "block";
+
+        };
+        container.onmouseout = function(){
+            autoPlay();
+            left.style.display = "none";
+            right.style.display = "none";
+        }
+
+
+    };
+
+    function getId(id){
+        return document.getElementById(id);
+    }
+</script>
+</body>
+</html>
